@@ -1,0 +1,105 @@
+---
+title: "Data Types"
+author: "Arman"
+date: '2022-02-23'
+slug: data-types
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="cat-lovers" class="section level2">
+<h2>Cat Lovers</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
+## v tibble  3.1.6     v dplyr   1.0.8
+## v tidyr   1.2.0     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>catlovers &lt;- &quot;https://raw.githubusercontent.com/dearbharat/tidyverse/main/cat-lovers.csv&quot;
+
+cat_lovers &lt;- read_csv(catlovers)</code></pre>
+<pre><code>## Rows: 60 Columns: 3</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (3): name, number_of_cats, handedness
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div id="summarize-data" class="section level3">
+<h3>Summarize Data</h3>
+<pre class="r"><code>glimpse(cat_lovers)</code></pre>
+<pre><code>## Rows: 60
+## Columns: 3
+## $ name           &lt;chr&gt; &quot;Bernice Warren&quot;, &quot;Woodrow Stone&quot;, &quot;Willie Bass&quot;, &quot;Tyro~
+## $ number_of_cats &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;1&quot;, &quot;3&quot;, &quot;3&quot;, &quot;2&quot;, &quot;1&quot;, &quot;1&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, ~
+## $ handedness     &lt;chr&gt; &quot;left&quot;, &quot;left&quot;, &quot;left&quot;, &quot;left&quot;, &quot;left&quot;, &quot;left&quot;, &quot;left&quot;,~</code></pre>
+<pre class="r"><code>cat_lovers %&gt;%
+  summarise(mean_cats = mean(number_of_cats, na.rm = TRUE))</code></pre>
+<pre><code>## Warning in mean.default(number_of_cats, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_cats
+##       &lt;dbl&gt;
+## 1        NA</code></pre>
+</div>
+<div id="fixing-bad-data" class="section level3">
+<h3>Fixing Bad Data</h3>
+<pre class="r"><code>cat_lovers %&gt;%
+  mutate(number_of_cats = case_when(
+      name == &quot;Ginger Clark&quot; ~ 2,
+      name == &quot;Doug Bass&quot;    ~ 3,
+      TRUE                   ~ as.numeric(number_of_cats)
+      )) %&gt;%
+  summarise(mean_cats = mean(number_of_cats))</code></pre>
+<pre><code>## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_cats
+##       &lt;dbl&gt;
+## 1     0.833</code></pre>
+</div>
+<div id="numeric-data-summary" class="section level3">
+<h3>Numeric Data Summary</h3>
+<pre class="r"><code>cat_lovers %&gt;%
+  mutate(
+    number_of_cats = case_when(
+      name == &quot;Ginger Clark&quot; ~ &quot;2&quot;,
+      name == &quot;Doug Bass&quot;    ~ &quot;3&quot;,
+      TRUE                   ~ number_of_cats
+      ),
+    number_of_cats = as.numeric(number_of_cats)
+    ) %&gt;%
+  summarise(mean_cats = mean(number_of_cats))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_cats
+##       &lt;dbl&gt;
+## 1     0.833</code></pre>
+</div>
+</div>
+<div id="data-types---coercion" class="section level2">
+<h2>Data Types - Coercion</h2>
+<pre class="r"><code>typeof(TRUE)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>typeof(&quot;Hello!&quot;)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+</div>
+<div id="explicit-coercion" class="section level2">
+<h2>Explicit Coercion</h2>
+<p>Number vs Character</p>
+<pre class="r"><code>x &lt;- 1:3
+typeof(x)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>typeof(as.character(x))</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<p>Number vs Logical</p>
+<pre class="r"><code>x &lt;- c(TRUE, FALSE)
+typeof(x)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>typeof(as.numeric(x))</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+</div>
